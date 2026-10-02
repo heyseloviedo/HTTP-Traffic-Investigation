@@ -2,52 +2,63 @@
 
 ## Objective
 
-Analyze HTTP network traffic to identify the client tool used to download a file, the web server software, the communicating IP addresses, and verify the downloaded file using an MD5 hash.
+Analyze HTTP network traffic to identify information about a file download. The investigation focused on examining HTTP requests and responses to identify the download utility, web server software, communicating IP addresses, downloaded file, and its MD5 checksum.
 
 ### Skills Learned
 
-- Analyzed HTTP request and response traffic in a packet capture.
-- Identified client and server information from HTTP headers.
-- Determined source and destination IP addresses involved in a file transfer.
-- Identified a downloaded file from an HTTP GET request.
-- Verified file integrity using an MD5 checksum.
+- Analyzing HTTP requests and responses in packet captures.
+- Identifying client and server information from HTTP headers.
+- Determining source and destination IP addresses involved in HTTP communication.
+- Identifying downloaded files from HTTP GET requests.
+- Verifying downloaded files using MD5 hashes.
 
 ### Tools Used
 
-- **Wireshark / CloudShark** for inspecting HTTP packets and headers.
-- **MD5 hashing** to verify the downloaded file.
+- **Wireshark / CloudShark** — packet inspection and HTTP traffic analysis.
+- **MD5 hashing** — verification of the downloaded file.
 
 ## Steps
 
-### 1. Identifying the client tool and requested file
+### 1. Identified the download utility
 
-The HTTP GET request showed that the requested file was `/images/layout/logo.png`. The `User-Agent` header identified the Linux download utility as **Wget/1.12 (linux-gnu)**.
+Examined the HTTP GET request and found the header:
 
-*Ref 1: HTTP GET request showing the requested file and Wget User-Agent.*
+`User-Agent: Wget/1.12 (linux-gnu)`
 
-> Screenshot placeholder: use the original full screenshot showing packet/frame 4 with the GET request and User-Agent header. Do not crop it.
+This identified **Wget** as the Linux utility used to download the file.
 
-### 2. Identifying the web server and communicating IP addresses
+### 2. Identified the web server
 
-The HTTP response returned **200 OK** and the `Server` header identified the web server as **nginx/0.8.53**. The HTTP request was initiated by **192.168.1.140** and sent to the server at **174.143.213.184**.
+Examined the HTTP response and found:
 
-*Ref 2: HTTP response showing the 200 OK response and nginx server header.*
+`Server: nginx/0.8.53`
 
-> Screenshot placeholder: use the original full screenshot showing packet/frame 36 with the HTTP response and Server header. Do not crop it.
+This identified **nginx** as the web server software.
 
-### 3. Verifying the downloaded file
+### 3. Identified the client and server IP addresses
 
-The downloaded file was identified as **logo.png** and its MD5 checksum was calculated as:
+The HTTP GET request showed that **192.168.1.140** initiated the request and **174.143.213.184** was the destination server.
+
+- **Client IP:** 192.168.1.140
+- **Server IP:** 174.143.213.184
+
+### 4. Identified the downloaded file
+
+The HTTP request contained:
+
+`GET /images/layout/logo.png HTTP/1.0`
+
+This showed that the downloaded file was **logo.png**.
+
+### 5. Verified the downloaded file
+
+The downloaded `logo.png` file was verified using its MD5 checksum.
 
 `966007c476e0c200fba8b28b250a6379`
 
-*Ref 3: Verification of the downloaded logo.png file and its MD5 checksum.*
-
-> Screenshot placeholder: use the original full screenshot showing the extracted/downloaded file or MD5 result. Do not crop it.
-
 ## Findings
 
-- **Download tool:** Wget
+- **Download utility:** Wget
 - **Web server:** nginx
 - **Client IP:** 192.168.1.140
 - **Server IP:** 174.143.213.184
